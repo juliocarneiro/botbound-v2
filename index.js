@@ -72,17 +72,17 @@ const client = new Client({
 //Completion
 
 async function completion(messages, forMe) {
-  // if (forMe) {
-  const completion = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
-    temperature: 0,
-    max_tokens: 256,
-    messages,
-  });
+  if (forMe) {
+    const completion = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      temperature: 0,
+      max_tokens: 256,
+      messages,
+    });
 
-  return completion.data.choices[0].message?.content;
-  // }
-  // return null;
+    return completion.data.choices[0].message?.content;
+  }
+  return null;
 }
 
 // GPT/Message
@@ -103,7 +103,8 @@ client.on("message", async (message) => {
     method: "get",
     url: "https://iabuild.com.br/wp-json/jet-cct/assistente?_ID=1",
   });
-  console.log(data.data.prompt);
+
+  console.log("data", data);
 
   const customerChat =
     lastChat?.status === "open"
@@ -132,7 +133,7 @@ client.on("message", async (message) => {
           orderSummary: "",
         };
 
-  console.debug(customerName, "👤", message.body);
+  console.debug(message.author, "👤", message.body);
 
   chat.sendStateTyping();
 
@@ -296,6 +297,70 @@ app.get("/status", async (req, res) => {
     root: __dirname,
   });
 });
+
+// Adiciona função de multiplos destinatarios
+
+app.use(
+  cors({
+    origin: ["http://iabuildtest.local"],
+  })
+);
+
+app.post(
+  "/enviar-mensagem-para-multiplos",
+  upload.single("csvFile"), // Adiciona o middleware multer para processar o upload do arquivo
+  [body("mensagem").notEmpty()],
+  async (req, res) => {
+    const status = checkToken(req);
+    if (!status) {
+      return res.status(422).json({
+        status: false,
+        message: "Seu token está incorreto ou vazio.",
+      });
+    }
+
+    const errors = validationResult(req).formatWith(({ msg }) => {
+      return msg;
+    });
+
+    if (!errors.isEmpty()) {
+      return res.status(422).json({
+        status: false,
+        message: errors.mapped(),
+      });
+    }
+
+    // Obtemos os números do arquivo, se estiver presente, ou do corpo da requisição
+    const numeros = req.file
+      ? req.file.buffer
+          .toString()
+          .split("\n")
+          .map((numero) => phoneNumberFormatter(numero.trim()))
+      : req.body.numeros.map(phoneNumberFormatter);
+
+    console.log("Números:", numeros);
+
+    const mensagem = req.body.mensagem;
+
+    // Itere pela lista de números e envie a mesma mensagem para cada um
+    for (const numero of numeros) {
+      const isRegistrado = await checkRegisteredNumber(numero);
+
+      if (isRegistrado) {
+        try {
+          await client.sendMessage(numero, mensagem);
+        } catch (error) {
+          console.error(`Erro no envio da mensagem para ${numero}:`, error);
+        }
+      }
+    }
+
+    res.status(200).json({
+      status: true,
+      response: "Mensagens enviadas para múltiplos números com sucesso!",
+    });
+  }
+);
 
 server.listen(port, function () {
   console.log("App running on *: " + port);
