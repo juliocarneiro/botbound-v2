@@ -108,7 +108,7 @@ client.on("message", async (message) => {
     url: "https://iabuild.com.br/wp-json/jet-cct/assistente?_ID=1",
   });
 
-  console.log("data", data.data);
+  console.log("data", data.data[0].promp);
 
   const customerChat =
     lastChat?.status === "open"
@@ -124,14 +124,7 @@ client.on("message", async (message) => {
           messages: [
             {
               role: "system",
-              content: `Você é uma assistente virtual de atendimento de uma pizzaria chamada ${storeName}. Você deve ser educada, atenciosa, amigável, cordial e muito paciente.
-
-        Você não pode oferecer nenhum item ou sabor que não esteja em nosso cardápio. Siga estritamente as listas de opções.
-        
-        O código do pedido é: ${orderCode}
-        
-        ${data.data[0].prompt}
-        `,
+              content: `Você é uma assistente virtual de atendimento de uma pizzaria chamada ${storeName}. Você deve ser educada, atenciosa, amigável, cordial e muito paciente. Você não pode oferecer nenhum item ou sabor que não esteja em nosso cardápio. Siga estritamente as listas de opções. O código do pedido é: ${orderCode} ${data.data[0].prompt}`,
             },
           ],
           orderSummary: "",
