@@ -7,7 +7,7 @@ const express = require("express");
 const { body, validationResult } = require("express-validator");
 const qrcode = require("qrcode");
 const http = require("http");
-const axios = require("axios");
+// const axios = require("axios");
 const { phoneNumberFormatter } = require("./helpers/formatter");
 const cors = require("cors");
 const multer = require("multer");
@@ -222,7 +222,7 @@ client.on("message", async (message) => {
           orderSummary: "",
         };
 
-  // console.debug(message.author, "👤", message.body);
+  console.debug(message.author, "👤", message.body);
 
   chat.sendStateTyping();
 
@@ -241,7 +241,7 @@ client.on("message", async (message) => {
     content,
   });
 
-  // console.debug(customerPhone, "🤖", content);
+  console.debug(customerPhone, "🤖", content);
 
   setTimeout(async () => {
     await client.sendMessage(message.from, content);
@@ -259,11 +259,11 @@ client.on("message", async (message) => {
       (await completion(customerChat.messages, true)) ||
       process.env.CUSTOMER_NEGATIVE_MESSAGE;
 
-    // console.debug(customerPhone, "📦", content);
+    console.debug(customerPhone, "📦", content);
 
     customerChat.orderSummary = content;
-    redis.set(customerKey, JSON.stringify({}));
-    return;
+    // redis.set(customerKey, JSON.stringify({}));
+    // return;
   }
   redis.set(customerKey, JSON.stringify(customerChat));
 });
@@ -427,7 +427,7 @@ app.post(
           .map((numero) => phoneNumberFormatter(numero.trim()))
       : req.body.numeros.map(phoneNumberFormatter);
 
-    // console.log("Números:", numeros);
+    console.log("Números:", numeros);
 
     const mensagem = req.body.mensagem;
 
