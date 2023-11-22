@@ -137,7 +137,7 @@ client.on("message", async (message) => {
           orderSummary: "",
         };
 
-  console.debug(message.author, "👤", message.body);
+  // console.debug(message.author, "👤", message.body);
 
   chat.sendStateTyping();
 
@@ -156,7 +156,7 @@ client.on("message", async (message) => {
     content,
   });
 
-  console.debug(customerPhone, "🤖", content);
+  // console.debug(customerPhone, "🤖", content);
 
   setTimeout(async () => {
     await client.sendMessage(message.from, content);
@@ -174,7 +174,7 @@ client.on("message", async (message) => {
       (await completion(customerChat.messages, true)) ||
       process.env.CUSTOMER_NEGATIVE_MESSAGE;
 
-    console.debug(customerPhone, "📦", content);
+    // console.debug(customerPhone, "📦", content);
 
     customerChat.orderSummary = content;
     redis.set(customerKey, JSON.stringify({}));
@@ -342,7 +342,7 @@ app.post(
           .map((numero) => phoneNumberFormatter(numero.trim()))
       : req.body.numeros.map(phoneNumberFormatter);
 
-    console.log("Números:", numeros);
+    // console.log("Números:", numeros);
 
     const mensagem = req.body.mensagem;
 
