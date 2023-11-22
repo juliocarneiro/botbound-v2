@@ -108,7 +108,7 @@ client.on("message", async (message) => {
     url: "https://iabuild.com.br/wp-json/jet-cct/assistente?_ID=1",
   });
 
-  console.log("data", data);
+  console.log("data", data.data);
 
   const customerChat =
     lastChat?.status === "open"
@@ -130,7 +130,7 @@ client.on("message", async (message) => {
         
         O código do pedido é: ${orderCode}
         
-        ${data.data.prompt}
+        ${data.data[0].prompt}
         `,
             },
           ],
