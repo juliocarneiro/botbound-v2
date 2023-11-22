@@ -10,6 +10,8 @@ const http = require("http");
 const axios = require("axios");
 const { phoneNumberFormatter } = require("./helpers/formatter");
 const cors = require("cors");
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
 
 const port = process.env.PORT || 3000;
 
