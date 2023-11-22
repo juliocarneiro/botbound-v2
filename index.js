@@ -108,7 +108,7 @@ client.on("message", async (message) => {
     url: "https://iabuild.com.br/wp-json/jet-cct/assistente?_ID=1",
   });
 
-  console.log("data", data.data[0].promp);
+  console.log("data", data.data[0].prompt);
 
   const customerChat =
     lastChat?.status === "open"
