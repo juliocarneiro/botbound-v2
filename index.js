@@ -9,6 +9,7 @@ const qrcode = require("qrcode");
 const http = require("http");
 const axios = require("axios");
 const { phoneNumberFormatter } = require("./helpers/formatter");
+const cors = require("cors");
 
 const port = process.env.PORT || 3000;
 
@@ -20,8 +21,8 @@ const token = "Bearer *!/0?;&okyE[)G4z;Zi},~VkS#~JO0QR";
 const username = "adm";
 const password = "adm";
 
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
 app.use(
   express.urlencoded({
     extended: true,
